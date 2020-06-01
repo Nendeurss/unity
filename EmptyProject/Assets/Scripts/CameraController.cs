@@ -24,8 +24,8 @@
 		{
 			if (!GameManager.Instance.IsPlaying) return;
 
-			// TO DO
-		}
+            transform.position = m_Target.transform.position + m_InitPosition;
+        }
 
 		protected override void GameMenu(GameMenuEvent e)
 		{
