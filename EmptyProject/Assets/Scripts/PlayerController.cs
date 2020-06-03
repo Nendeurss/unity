@@ -8,22 +8,31 @@ public class PlayerController : MonoBehaviour
     Rigidbody m_Rigidbody;
 
 
-    [Header("Translation & Rotation")]
-    [Tooltip("Vitesse de translation en m.s-1")]
-    [SerializeField] float m_TranslationSpeed;
-    [Tooltip("Vitesse de rotation en °.s-1")]
-    [SerializeField] float m_RotationSpeed;
-    [SerializeField] float m_UprightRotationLerpCoef;
+    [Header("Deplacement")]
+    [Tooltip("Vitesse en m.s-1")]
+    [SerializeField] float m_Speed;
+    [Tooltip("Acceleration en m.s-2")]
+    [SerializeField] float m_Acceleration;
+    [SerializeField] float m_TimeBetweenAcceleration;
+
+
+    float timeBeforeAcceleration;
+    bool canJump;
+    //[Tooltip("Vitesse de rotation en °.s-1")]
+    //[SerializeField] float m_RotationSpeed;
+    //[SerializeField] float m_UprightRotationLerpCoef;
 
     private void Awake()
     {
         m_Rigidbody = GetComponent<Rigidbody>();
+        timeBeforeAcceleration = m_TimeBetweenAcceleration;
+        canJump = true;
     }
 
     // Start is called before the first frame update
     void Start()
     {
-
+        //m_Rigidbody.velocity = new Vector3(0, 0, m_Speed);
     }
 
     // Update is called once per frame
@@ -32,25 +41,45 @@ public class PlayerController : MonoBehaviour
 
     }
 
+    IEnumerator JumpCouritine()
+    {
+        m_Rigidbody.AddForce(new Vector3(0, 10, 0), ForceMode.Impulse);
+        canJump = false;
+        yield return new WaitForSeconds(2);
+        canJump = true;
+    }
+
     private void FixedUpdate()
     {
         // comportement dynamique cinétique (non-kinematic)
         // Time.fixedDeltaTime
         if (!GameManager.Instance.IsPlaying) return;
+        timeBeforeAcceleration -= Time.deltaTime;
 
-        float vInput = Input.GetAxis("Vertical");
-        float hInput = Input.GetAxis("Horizontal");
+        if (timeBeforeAcceleration < 0)
+        {
 
-        Vector3 translationVect = vInput * transform.forward * m_TranslationSpeed * Time.fixedDeltaTime;
+            m_Speed += m_Acceleration;
+            timeBeforeAcceleration = m_TimeBetweenAcceleration;
+        }
+        //StartCoroutine(PlayerAcceleration());
+        //float vInput = Input.GetAxis("Vertical");
+        //float hInput = Input.GetAxis("Horizontal");
+        Vector3 translationVect = transform.forward * m_Speed * Time.fixedDeltaTime;
         m_Rigidbody.MovePosition(transform.position + translationVect);
-        Quaternion qUpright = Quaternion.FromToRotation(transform.up, Vector3.up);
-        Quaternion newOrientation = Quaternion.Lerp(transform.rotation, qUpright * transform.rotation, m_UprightRotationLerpCoef * Time.fixedDeltaTime);
-        float deltaAngle = hInput * m_RotationSpeed * Time.fixedDeltaTime;
-        Quaternion qRot = Quaternion.AngleAxis(deltaAngle, transform.up);
+        if (canJump && Input.GetKey("space"))
+        {
+            StartCoroutine(JumpCouritine());
+        }
 
-        newOrientation = qRot * newOrientation;
+        //Quaternion qUpright = Quaternion.FromToRotation(transform.up, Vector3.up);
+        //Quaternion newOrientation = Quaternion.Lerp(transform.rotation, qUpright * transform.rotation, m_UprightRotationLerpCoef * Time.fixedDeltaTime);
+        //float deltaAngle = hInput * m_RotationSpeed * Time.fixedDeltaTime;
+        //Quaternion qRot = Quaternion.AngleAxis(deltaAngle, transform.up);
 
-        m_Rigidbody.MoveRotation(newOrientation);
+        //newOrientation = qRot * newOrientation;
+
+        //m_Rigidbody.MoveRotation(newOrientation);
 
     }
 }
