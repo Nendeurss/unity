@@ -8,9 +8,6 @@ public class PlayerController : SimpleGameStateObserver
 {
     Rigidbody m_Rigidbody;
 
-    [Header("Point de départ")]
-    [SerializeField] private Transform m_SpawnPoint;
-
     [Header("Deplacement")]
     [Tooltip("Vitesse en m.s-1")]
     [SerializeField] float m_ForwardSpeed;
@@ -88,6 +85,7 @@ public class PlayerController : SimpleGameStateObserver
 
         if (canJump && Input.GetKey("space"))
         {
+            Debug.Log("JUMP");
             StartCoroutine(JumpCoroutine());
         }
     }
@@ -101,6 +99,16 @@ public class PlayerController : SimpleGameStateObserver
         }
     }
 
+    private void OnTriggerEnter(Collider collider)
+    {
+        if (collider.gameObject.CompareTag("EndChunk"))
+        {
+            EventManager.Instance.Raise(new PlayerHasReachedEndChunk() {});
+            Destroy(collider.gameObject);
+            EventManager.Instance.Raise(new ChunkTriggerDestroyed() { });
+        }
+    }
+
     void ShootBullet()
     {
         GameObject bulletGO = Instantiate(m_BulletPrefab, m_BulletSpawnPoint.position, Quaternion.identity);
@@ -110,7 +118,6 @@ public class PlayerController : SimpleGameStateObserver
 
     private void Reset()
     {
-        m_Rigidbody.position = m_SpawnPoint.position;
         m_NextShootTime = Time.time;
 
     }

@@ -109,7 +109,7 @@ Rigidbody:
   m_Drag: 1
   m_AngularDrag: 1
   m_UseGravity: 1
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
@@ -125,7 +125,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ecff9b80bb13e341bb8bb46b86a5476, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ForwardSpeed: 5
+  m_SpawnPoint: {fileID: 6355784717325503646, guid: 50a0a390a20963640beb8a6eb228c75a,
+    type: 3}
+  m_ForwardSpeed: 1
   m_TranslationSpeed: 5
   m_Acceleration: 3
   m_TimeBetweenAcceleration: 1
