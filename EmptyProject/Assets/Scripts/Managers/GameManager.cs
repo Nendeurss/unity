@@ -19,8 +19,7 @@
 		//LIVES
 		#region Lives
 		[Header("GameManager")]
-		[SerializeField]
-		private int m_NStartLives;
+		[SerializeField] private int m_NStartLives;
 
 		private int m_NLives;
 		public int NLives { get { return m_NLives; } }
@@ -81,9 +80,12 @@
 		public override void SubscribeEvents()
 		{
 			base.SubscribeEvents();
-			
-			//MainMenuManager
-			EventManager.Instance.AddListener<MainMenuButtonClickedEvent>(MainMenuButtonClicked);
+
+            //PlayerController
+            EventManager.Instance.AddListener<PlayerHasBeenHitEvent>(PlayerHasBeenHit);
+
+            //MainMenuManager
+            EventManager.Instance.AddListener<MainMenuButtonClickedEvent>(MainMenuButtonClicked);
 			EventManager.Instance.AddListener<PlayButtonClickedEvent>(PlayButtonClicked);
 			EventManager.Instance.AddListener<ResumeButtonClickedEvent>(ResumeButtonClicked);
 			EventManager.Instance.AddListener<EscapeButtonClickedEvent>(EscapeButtonClicked);
@@ -97,8 +99,11 @@
 		{
 			base.UnsubscribeEvents();
 
-			//MainMenuManager
-			EventManager.Instance.RemoveListener<MainMenuButtonClickedEvent>(MainMenuButtonClicked);
+            //PlayerController
+            EventManager.Instance.RemoveListener<PlayerHasBeenHitEvent>(PlayerHasBeenHit);
+
+            //MainMenuManager
+            EventManager.Instance.RemoveListener<MainMenuButtonClickedEvent>(MainMenuButtonClicked);
 			EventManager.Instance.RemoveListener<PlayButtonClickedEvent>(PlayButtonClicked);
 			EventManager.Instance.RemoveListener<ResumeButtonClickedEvent>(ResumeButtonClicked);
 			EventManager.Instance.RemoveListener<EscapeButtonClickedEvent>(EscapeButtonClicked);
@@ -120,9 +125,10 @@
 
 		#region Game flow & Gameplay
 		//Game initialization
-		void InitNewGame(bool raiseStatsEvent = true)
+		void InitNewGame()
 		{
 			SetScore(0);
+            SetNLives(m_NStartLives);
 		}
 		#endregion
 
@@ -130,12 +136,25 @@
 		private void ScoreHasBeenGained(ScoreItemEvent e)
 		{
 			if (IsPlaying)
-				IncrementScore(e.eScore);
+				IncrementScore(e.eScore.Score);
 		}
-		#endregion
 
-		#region Callbacks to Events issued by MenuManager
-		private void MainMenuButtonClicked(MainMenuButtonClickedEvent e)
+        
+        private void PlayerHasBeenHit(PlayerHasBeenHitEvent e)
+        {
+
+            DecrementNLives(1);
+
+            if (m_NLives == 0)
+            {
+                Over();
+            }
+        }
+    
+        #endregion
+
+        #region Callbacks to Events issued by MenuManager
+        private void MainMenuButtonClicked(MainMenuButtonClickedEvent e)
 		{
 			Menu();
 		}
@@ -175,7 +194,7 @@
 			InitNewGame();
 			SetTimeScale(1);
 			m_GameState = GameState.gamePlay;
-
+            
 			if (MusicLoopsManager.Instance) MusicLoopsManager.Instance.PlayMusic(Constants.GAMEPLAY_MUSIC);
 			EventManager.Instance.Raise(new GamePlayEvent());
 		}

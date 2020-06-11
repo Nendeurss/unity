@@ -52,6 +52,13 @@ public class QuitButtonClickedEvent : SDD.Events.Event
 #region Score Event
 public class ScoreItemEvent : SDD.Events.Event
 {
-	public float eScore;
+	public IScore eScore;
+}
+#endregion
+
+#region Player Events
+public class PlayerHasBeenHitEvent : SDD.Events.Event
+{
+    public PlayerController ePlayerController;
 }
 #endregion

@@ -63,7 +63,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\AllEvents.cs" />
+    <Compile Include="Assets\Scripts\BulletBehaviour.cs" />
     <Compile Include="Assets\Scripts\CameraController.cs" />
+    <Compile Include="Assets\Scripts\CollectibleBehaviour.cs" />
     <Compile Include="Assets\Scripts\Common\CustomTimer.cs" />
     <Compile Include="Assets\Scripts\Common\FlagsManager.cs" />
     <Compile Include="Assets\Scripts\Common\Manager.cs" />
@@ -78,6 +80,7 @@
     <Compile Include="Assets\Scripts\EventManager\Event.cs" />
     <Compile Include="Assets\Scripts\EventManager\EventManager.cs" />
     <Compile Include="Assets\Scripts\EventManager\IEventHandler.cs" />
+    <Compile Include="Assets\Scripts\GroundBehaviour.cs" />
     <Compile Include="Assets\Scripts\IScore.cs" />
     <Compile Include="Assets\Scripts\Managers\GameManager.cs" />
     <Compile Include="Assets\Scripts\Managers\HudManager.cs" />
