@@ -4,7 +4,7 @@
 
 	public class CameraController : SimpleGameStateObserver
 	{
-		[SerializeField] Transform m_Target;
+		//[SerializeField] Transform m_Target;
 		Transform m_Transform;
 		Vector3 m_InitPosition;
 
@@ -23,9 +23,9 @@
 		void Update()
 		{
 			if (!GameManager.Instance.IsPlaying) return;
-
-			// TO DO
-		}
+            //Debug.Log("Camera : " + transform.position);
+            //transform.position = m_Target.transform.position + m_InitPosition;
+        }
 
 		protected override void GameMenu(GameMenuEvent e)
 		{
