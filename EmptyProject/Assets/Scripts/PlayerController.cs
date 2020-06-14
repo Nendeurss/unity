@@ -4,14 +4,14 @@ using UnityEngine;
 using STUDENT_NAME;
 using SDD.Events;
 
-public class PlayerController : SimpleGameStateObserver
+public class PlayerController : SimpleGameStateObserver, IScore
 {
     Rigidbody m_Rigidbody;
 
     [Header("Deplacement")]
     [Tooltip("Vitesse en m.s-1")]
     [SerializeField] float m_ForwardSpeed;
-    public float Speed { get { return m_ForwardSpeed;  } }
+    public float Speed { get { return m_ForwardSpeed; } }
 
     [SerializeField] float m_TranslationSpeed;
     [SerializeField] float m_Acceleration;
@@ -26,8 +26,11 @@ public class PlayerController : SimpleGameStateObserver
     [SerializeField] private Transform m_BulletSpawnPoint;
     [SerializeField] private float m_LifeDuration;
     [SerializeField] private float m_BulletSpeed;
-
     bool canJump;
+
+    [Header("Score")]
+    [SerializeField] private int m_Score;
+    public int Score { get { return m_Score; } }
 
     protected override void Awake()
     {
@@ -37,12 +40,7 @@ public class PlayerController : SimpleGameStateObserver
         canJump = true;
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        //m_Rigidbody.velocity = new Vector3(0, 0, m_Speed);
-    }
-
+    
     // Update is called once per frame
     void Update()
     {
@@ -60,6 +58,7 @@ public class PlayerController : SimpleGameStateObserver
             ShootBullet();
             m_NextShootTime = Time.time + m_ShootPeriod;
         }
+        EventManager.Instance.Raise(new ScoreItemEvent() { eScore = this as IScore });
     }
 
     IEnumerator JumpCoroutine()
@@ -88,6 +87,7 @@ public class PlayerController : SimpleGameStateObserver
             Debug.Log("JUMP");
             StartCoroutine(JumpCoroutine());
         }
+        
     }
 
     private void OnCollisionEnter(Collision collision)

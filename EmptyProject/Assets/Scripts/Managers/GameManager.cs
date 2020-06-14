@@ -61,9 +61,14 @@
 
 		void SetScore(float score, bool raiseEvent = true)
 		{
+            Debug.Log("le score : " + m_Score);
 			Score = score;
-
-			if (raiseEvent)
+            if(m_Score > 500)
+            {
+                Debug.Log("wsh j'ai gagne");
+                EventManager.Instance.Raise(new GameVictoryEvent() {});
+            }
+            if (raiseEvent)
 				EventManager.Instance.Raise(new GameStatisticsChangedEvent() { eBestScore = BestScore, eScore = m_Score, eNLives = m_NLives });
 		}
 		#endregion
@@ -126,8 +131,7 @@
 		#region Game flow & Gameplay
 		//Game initialization
 		void InitNewGame()
-		{
-			SetScore(0);
+        { 
             SetNLives(m_NStartLives);
 		}
 		#endregion
@@ -184,7 +188,8 @@
 		private void Menu()
 		{
 			SetTimeScale(1);
-			m_GameState = GameState.gameMenu;
+            SetScore(0);
+            m_GameState = GameState.gameMenu;
 			if(MusicLoopsManager.Instance)MusicLoopsManager.Instance.PlayMusic(Constants.MENU_MUSIC);
 			EventManager.Instance.Raise(new GameMenuEvent());
 		}
