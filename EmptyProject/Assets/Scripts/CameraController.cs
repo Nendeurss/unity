@@ -29,7 +29,7 @@
 
 		protected override void GameMenu(GameMenuEvent e)
 		{
-			ResetCamera();
+			//ResetCamera();
 		}
 	}
 }
