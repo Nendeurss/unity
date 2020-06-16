@@ -14,11 +14,12 @@
 		#region Game State
 		private GameState m_GameState;
 		public bool IsPlaying { get { return m_GameState == GameState.gamePlay; } }
-		#endregion
+        public bool IsGameOver { get { return  m_GameState == GameState.gameOver ; } }
+        #endregion
 
-		//LIVES
-		#region Lives
-		[Header("GameManager")]
+        //LIVES
+        #region Lives
+        [Header("GameManager")]
 		[SerializeField] private int m_NStartLives;
 
 		private int m_NLives;
@@ -33,12 +34,14 @@
 			m_NLives = nLives;
 			EventManager.Instance.Raise(new GameStatisticsChangedEvent() { eBestScore = BestScore, eScore = m_Score, eNLives = m_NLives});
 		}
-		#endregion
+        #endregion
 
 
-		#region Score
-		private float m_Score;
-		public float Score
+        #region Score
+        private bool levelComplete = false;
+        [SerializeField] float VictoryCondition;
+        private float m_Score;
+        public float Score
 		{
 			get { return m_Score; }
 			set
@@ -60,20 +63,20 @@
 		}
 
 		void SetScore(float score, bool raiseEvent = true)
-		{
-            Debug.Log("le score : " + m_Score);
+		{ 
 			Score = score;
-            if(m_Score > 500)
+            if(Score > VictoryCondition  && !levelComplete)
             {
-                Debug.Log("wsh j'ai gagne");
-                EventManager.Instance.Raise(new GameVictoryEvent() {});
+                Victory();
             }
             if (raiseEvent)
 				EventManager.Instance.Raise(new GameStatisticsChangedEvent() { eBestScore = BestScore, eScore = m_Score, eNLives = m_NLives });
 		}
-		#endregion
+        #endregion
 
-		#region Time
+        #region Time
+        [SerializeField] public float timerStart;
+        float timer;
 		void SetTimeScale(float newTimeScale)
 		{
 			Time.timeScale = newTimeScale;
@@ -89,6 +92,10 @@
             //PlayerController
             EventManager.Instance.AddListener<PlayerHasBeenHitEvent>(PlayerHasBeenHit);
 
+            //Game state 
+            EventManager.Instance.AddListener<GameOverEvent>(GameOver);
+            EventManager.Instance.AddListener<TimerBeforePlayEvent>(TimerBeforePlay);
+
             //MainMenuManager
             EventManager.Instance.AddListener<MainMenuButtonClickedEvent>(MainMenuButtonClicked);
 			EventManager.Instance.AddListener<PlayButtonClickedEvent>(PlayButtonClicked);
@@ -97,6 +104,7 @@
 			EventManager.Instance.AddListener<QuitButtonClickedEvent>(QuitButtonClicked);
 
 			//Score Item
+
 			EventManager.Instance.AddListener<ScoreItemEvent>(ScoreHasBeenGained);
 		}
 
@@ -106,6 +114,9 @@
 
             //PlayerController
             EventManager.Instance.RemoveListener<PlayerHasBeenHitEvent>(PlayerHasBeenHit);
+
+            EventManager.Instance.RemoveListener<GameOverEvent>(GameOver);
+            EventManager.Instance.RemoveListener<TimerBeforePlayEvent>(TimerBeforePlay);
 
             //MainMenuManager
             EventManager.Instance.RemoveListener<MainMenuButtonClickedEvent>(MainMenuButtonClicked);
@@ -123,8 +134,8 @@
 		protected override IEnumerator InitCoroutine()
 		{
 			Menu();
-			InitNewGame(); // essentiellement pour que les statistiques du jeu soient mise à jour en HUD
-			yield break;
+            EventManager.Instance.Raise(new GameStatisticsChangedEvent() { eBestScore = BestScore, eScore = 0, eNLives = 0});
+            yield break;
 		}
 		#endregion
 
@@ -133,6 +144,7 @@
 		void InitNewGame()
         { 
             SetNLives(m_NStartLives);
+            levelComplete = false;
 		}
 		#endregion
 
@@ -151,7 +163,7 @@
 
             if (m_NLives == 0)
             {
-                Over();
+                EventManager.Instance.Raise(new GameOverEvent());
             }
         }
     
@@ -165,13 +177,20 @@
 
 		private void PlayButtonClicked(PlayButtonClickedEvent e)
 		{
-			Play();
+            //StartCoroutine(StartCountdown("Play"));
+            //EventManager.Instance.Raise(new TimerBeforePlayEvent() {});
+            
+            Play();
 		}
 
 		private void ResumeButtonClicked(ResumeButtonClickedEvent e)
 		{
-			Resume();
-		}
+
+            
+            Resume();
+            //EventManager.Instance.Raise(new TimerBeforePlayEvent() { });
+            //StartCoroutine(StartCountdown("Resume"));
+        }
 
 		private void EscapeButtonClicked(EscapeButtonClickedEvent e)
 		{
@@ -187,6 +206,7 @@
 		#region GameState methods
 		private void Menu()
 		{
+            levelComplete = false; 
 			SetTimeScale(1);
             SetScore(0);
             m_GameState = GameState.gameMenu;
@@ -198,9 +218,9 @@
 		{
 			InitNewGame();
 			SetTimeScale(1);
-			m_GameState = GameState.gamePlay;
-            
-			if (MusicLoopsManager.Instance) MusicLoopsManager.Instance.PlayMusic(Constants.GAMEPLAY_MUSIC);
+
+            //m_GameState = GameState.gamePlay;
+            if (MusicLoopsManager.Instance) MusicLoopsManager.Instance.PlayMusic(Constants.GAMEPLAY_MUSIC);
 			EventManager.Instance.Raise(new GamePlayEvent());
 		}
 
@@ -210,26 +230,61 @@
 
 			SetTimeScale(0);
 			m_GameState = GameState.gamePause;
-			EventManager.Instance.Raise(new GamePauseEvent());
+            
+            EventManager.Instance.Raise(new GamePauseEvent());
 		}
 
 		private void Resume()
 		{
 			if (IsPlaying) return;
 
-			SetTimeScale(1);
-			m_GameState = GameState.gamePlay;
-			EventManager.Instance.Raise(new GameResumeEvent());
+            SetTimeScale(1);
+            //m_GameState = GameState.gamePlay;
+            EventManager.Instance.Raise(new GameResumeEvent());
 		}
+
+        protected override void GameOver(GameOverEvent e)
+        {
+            Over();
+        }
 
 		private void Over()
 		{
+            levelComplete = false;
 			SetTimeScale(0);
 			m_GameState = GameState.gameOver;
-			EventManager.Instance.Raise(new GameOverEvent());
+			//EventManager.Instance.Raise(new GameOverEvent());
 			if(SfxManager.Instance) SfxManager.Instance.PlaySfx2D(Constants.GAMEOVER_SFX);
 		}
-		#endregion
-	}
+
+        private void Victory()
+        {
+            levelComplete = true;
+            SetTimeScale(0);
+            m_GameState = GameState.gameVictory;
+            EventManager.Instance.Raise(new GameVictoryEvent());
+        }
+
+        protected void TimerBeforePlay(TimerBeforePlayEvent e)
+        {
+            StartCoroutine(StartCountdown());
+        }
+
+        IEnumerator StartCountdown()
+        {
+            Debug.Log("debut coroutine Game manager");
+            //m_GameState = GameState.gameTimer;
+            timer = timerStart;
+            while(timer > 0)
+            {
+                Debug.Log("Game manager TIMER " + timer);
+                yield return new WaitForSeconds(1f);
+                timer--;
+            }
+            m_GameState = GameState.gamePlay;
+            Debug.Log("Fin coroutine Game Manager");
+        }
+        #endregion
+    }
 }
 

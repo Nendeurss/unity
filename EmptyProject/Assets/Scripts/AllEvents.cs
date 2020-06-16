@@ -41,12 +41,19 @@ public class PlayButtonClickedEvent : SDD.Events.Event
 public class ResumeButtonClickedEvent : SDD.Events.Event
 {
 }
+
+public class TimerBeforePlayEvent : SDD.Events.Event
+{
+}
+
 public class MainMenuButtonClickedEvent : SDD.Events.Event
 {
 }
 
 public class QuitButtonClickedEvent : SDD.Events.Event
 { }
+
+
 #endregion
 
 #region Score Event

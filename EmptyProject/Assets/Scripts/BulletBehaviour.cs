@@ -13,7 +13,6 @@ public class BulletBehaviour : SimpleGameStateObserver
     [SerializeField]
     private float m_LifeDuration;
 
-
     protected override void Awake()
     {
         base.Awake();
@@ -24,7 +23,19 @@ public class BulletBehaviour : SimpleGameStateObserver
 
     private void OnCollisionEnter(Collision collision)
     {
-        //Destroy(gameObject);
+        Destroy(collision.gameObject);
+        Destroy(gameObject);
+    }
+
+    private void Reset()
+    {
+        Destroy(gameObject);
+
+    }
+
+    protected override void GameMenu(GameMenuEvent e)
+    {
+        Reset();
     }
 
 }
