@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 1323620898365358872}
   - component: {fileID: 8707496291784461426}
   m_Layer: 0
-  m_Name: Player 1 1
+  m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -127,7 +127,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ForwardSpeed: 1
-  m_TranslationSpeed: 5
+  m_TranslationSpeed: 10
   m_Acceleration: 3
   m_TimeBetweenAcceleration: 1
   m_BulletPrefab: {fileID: 8314184868301579731, guid: af53300713d5a0841a8fe3ce19cad120,
@@ -136,7 +136,7 @@ MonoBehaviour:
   m_BulletSpawnPoint: {fileID: 7798692268734132005}
   m_LifeDuration: 5
   m_BulletSpeed: 20
-  m_Score: 1
+  m_Score: 10
 --- !u!1 &6626553045020927879
 GameObject:
   m_ObjectHideFlags: 0

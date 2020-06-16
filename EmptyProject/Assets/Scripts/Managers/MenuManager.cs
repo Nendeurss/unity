@@ -16,25 +16,33 @@ namespace STUDENT_NAME
 		[Header("Panels")]
 		[SerializeField] GameObject m_PanelMainMenu;
 		[SerializeField] GameObject m_PanelInGameMenu;
+        [SerializeField] GameObject m_PanelVictory;
 		[SerializeField] GameObject m_PanelGameOver;
+        [SerializeField] GameObject m_PanelTimer;
 
-		List<GameObject> m_AllPanels;
+        List<GameObject> m_AllPanels;
+        float timer;
 		#endregion
 
 		#region Events' subscription
 		public override void SubscribeEvents()
 		{
 			base.SubscribeEvents();
-		}
+            EventManager.Instance.AddListener<TimerBeforePlayEvent>(TimerBeforePlay);
 
-		public override void UnsubscribeEvents()
+
+        }
+
+        public override void UnsubscribeEvents()
 		{
 			base.UnsubscribeEvents();
-		}
-		#endregion
+            EventManager.Instance.RemoveListener<TimerBeforePlayEvent>(TimerBeforePlay);
 
-		#region Manager implementation
-		protected override IEnumerator InitCoroutine()
+        }
+        #endregion
+
+        #region Manager implementation
+        protected override IEnumerator InitCoroutine()
 		{
 			yield break;
 		}
@@ -49,7 +57,7 @@ namespace STUDENT_NAME
 
 		private void Update()
 		{
-			if (Input.GetButtonDown("Cancel"))
+			if (Input.GetButtonDown("Cancel") && GameManager.Instance.IsPlaying)
 			{
 				EscapeButtonHasBeenClicked();
 			}
@@ -63,7 +71,10 @@ namespace STUDENT_NAME
 			m_AllPanels.Add(m_PanelMainMenu);
 			m_AllPanels.Add(m_PanelInGameMenu);
 			m_AllPanels.Add(m_PanelGameOver);
-		}
+            m_AllPanels.Add(m_PanelVictory);
+            m_AllPanels.Add(m_PanelTimer);
+
+        }
 
 		void OpenPanel(GameObject panel)
 		{
@@ -80,12 +91,14 @@ namespace STUDENT_NAME
 
 		public void PlayButtonHasBeenClicked()
 		{
-			EventManager.Instance.Raise(new PlayButtonClickedEvent());
+
+            EventManager.Instance.Raise(new PlayButtonClickedEvent());
 		}
 
 		public void ResumeButtonHasBeenClicked()
 		{
-			EventManager.Instance.Raise(new ResumeButtonClickedEvent());
+ 
+            EventManager.Instance.Raise(new ResumeButtonClickedEvent());
 		}
 
 		public void MainMenuButtonHasBeenClicked()
@@ -95,8 +108,14 @@ namespace STUDENT_NAME
 
 		public void QuitButtonHasBeenClicked()
 		{
+            
 			EventManager.Instance.Raise(new QuitButtonClickedEvent());
 		}
+
+        public void TimerBeforePlay()
+        {
+            EventManager.Instance.Raise(new TimerBeforePlayEvent());
+        }
 
 		#endregion
 
@@ -108,8 +127,9 @@ namespace STUDENT_NAME
 
 		protected override void GamePlay(GamePlayEvent e)
 		{
-			OpenPanel(null);
-		}
+            //OpenPanel(null);
+            EventManager.Instance.Raise(new TimerBeforePlayEvent());
+        }
 
 		protected override void GamePause(GamePauseEvent e)
 		{
@@ -118,14 +138,43 @@ namespace STUDENT_NAME
 
 		protected override void GameResume(GameResumeEvent e)
 		{
-			OpenPanel(null);
-		}
+            //OpenPanel(null);
+            EventManager.Instance.Raise(new TimerBeforePlayEvent());
+        }
 
 		protected override void GameOver(GameOverEvent e)
 		{
 			OpenPanel(m_PanelGameOver);
 		}
-		#endregion
-	}
+
+        protected override void GameVictory(GameVictoryEvent e)
+        {
+            OpenPanel(m_PanelVictory);
+        }
+
+
+        protected void TimerBeforePlay(TimerBeforePlayEvent e)
+        {
+            OpenPanel(m_PanelTimer);
+            StartCoroutine(StartCountdown());
+        }
+
+        IEnumerator StartCountdown()
+        {
+            Debug.Log("debut coroutine Menu manager");
+            //m_GameState = GameState.gameTimer;
+            timer = GameManager.Instance.timerStart;
+            while (timer > 0)
+            {
+                Debug.Log(" MENU MANAGER TIMER " + timer);
+                yield return new WaitForSeconds(1f);
+                timer--;
+            }
+            OpenPanel(null);
+            Debug.Log("fin coroutine MENU manager");
+
+        }
+        #endregion
+    }
 
 }

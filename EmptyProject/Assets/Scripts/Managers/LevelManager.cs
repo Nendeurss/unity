@@ -79,8 +79,8 @@
             GameObject chunk = Instantiate(NextChunkTriggerPrefab, chunkList[5].transform.position, Quaternion.identity);
             
             Vector3 chunkCollider = chunk.GetComponent<BoxCollider>().size;
-            chunkCollider.x = chunkPrefab.GetComponent<Renderer>().bounds.size.x;
-            chunkCollider.y = 200;
+            chunkCollider.x = chunkPrefab.GetComponent<Renderer>().bounds.size.x*2;
+            chunkCollider.y = 500;
             chunkCollider.z = chunkPrefab.GetComponent<Renderer>().bounds.size.z;
             chunk.transform.localScale = chunkCollider;
             return chunk;

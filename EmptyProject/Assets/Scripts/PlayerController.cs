@@ -45,8 +45,13 @@ public class PlayerController : SimpleGameStateObserver, IScore
     void Update()
     {
         if (!GameManager.Instance.IsPlaying) return;
+        if (m_Rigidbody.transform.position.y < 0)
+        {
+            EventManager.Instance.Raise(new GameOverEvent());
+        }
+        Debug.Log("Is playing : " + GameManager.Instance.IsPlaying);
         timeBeforeAcceleration -= Time.deltaTime;
-
+        
         if (timeBeforeAcceleration < 0)
         {
 
@@ -71,6 +76,7 @@ public class PlayerController : SimpleGameStateObserver, IScore
 
     private void FixedUpdate()
     {
+
         // comportement dynamique cinétique (non-kinematic)
         // Time.fixedDeltaTime
         if (!GameManager.Instance.IsPlaying) return;
@@ -126,5 +132,12 @@ public class PlayerController : SimpleGameStateObserver, IScore
     {
         Reset();
     }
+
+    protected override void GameOver(GameOverEvent e)
+    {
+        Destroy(gameObject);
+    }
+
+
 }
 
