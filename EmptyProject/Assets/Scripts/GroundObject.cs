@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using STUDENT_NAME;
+using LIM_TRAN_HOUACINE_NGUYEN;
 using SDD.Events;
 
 public class GroundObject : SimpleGameStateObserver
@@ -13,8 +13,6 @@ public class GroundObject : SimpleGameStateObserver
 
     void Start()
     {
-        Debug.Log("Ground debug "+chunkPos.position);
-        Debug.Log("Ground debug "+chunkPos.position);
         setObstaclePosition(Obstacle);
         GameObject obs = Instantiate(Obstacle, Obstacle.transform.position, Quaternion.identity);
         obs.transform.SetParent(chunkPos);
@@ -34,7 +32,8 @@ public class GroundObject : SimpleGameStateObserver
         Vector3 chunkPosVector = chunkPos.position;
         float randomX = Random.Range(chunkPosVector.x - 4, chunkPosVector.x + 4);
         float randomZ = Random.Range(chunkPosVector.z - 4, chunkPosVector.z + 4);
-        Vector3 v = new Vector3(randomX, 0, randomZ);
+        float randomY = Random.Range(chunkPosVector.y - 4, chunkPosVector.y + 4);
+        Vector3 v = new Vector3(randomX, randomY, randomZ);
         Obstacle.transform.position = v;
     }
 }

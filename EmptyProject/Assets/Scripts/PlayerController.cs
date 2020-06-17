@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using STUDENT_NAME;
+using LIM_TRAN_HOUACINE_NGUYEN;
 using SDD.Events;
 
 public class PlayerController : SimpleGameStateObserver, IScore
@@ -31,6 +31,9 @@ public class PlayerController : SimpleGameStateObserver, IScore
     [Header("Score")]
     [SerializeField] private int m_Score;
     public int Score { get { return m_Score; } }
+
+    private Transform m_TansformbeforeTimer;
+    float timer;
 
     protected override void Awake()
     {
@@ -70,7 +73,7 @@ public class PlayerController : SimpleGameStateObserver, IScore
     {
         m_Rigidbody.AddForce(new Vector3(0, 10, 0), ForceMode.Impulse);
         canJump = false;
-        while(transform.position.y!=1)yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(2f);
         canJump = true;
     }
 
@@ -90,7 +93,6 @@ public class PlayerController : SimpleGameStateObserver, IScore
 
         if (canJump && Input.GetKey("space"))
         {
-            Debug.Log("JUMP");
             StartCoroutine(JumpCoroutine());
         }
         
@@ -127,6 +129,19 @@ public class PlayerController : SimpleGameStateObserver, IScore
         m_NextShootTime = Time.time;
 
     }
+
+    #region Events subscription
+    public override void SubscribeEvents()
+    {
+        base.SubscribeEvents();
+        
+    }
+
+    public override void UnsubscribeEvents()
+    {
+        base.UnsubscribeEvents();
+    }
+    #endregion
 
     protected override void GameMenu(GameMenuEvent e)
     {

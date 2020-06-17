@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using SDD.Events;
-using STUDENT_NAME;
+using LIM_TRAN_HOUACINE_NGUYEN;
 
 public class CollectibleBehaviour : SimpleGameStateObserver, IScore
 {

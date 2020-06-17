@@ -1,4 +1,4 @@
-﻿namespace STUDENT_NAME
+﻿namespace LIM_TRAN_HOUACINE_NGUYEN
 {
 	using System.Collections;
 	using System.Collections.Generic;
@@ -56,12 +56,8 @@
             if(chunkTrigger!=null) Destroy(chunkTrigger);
             chunkTrigger = createChunkTrigger();
 
-            //Debug.Log("Actual Chunk Pos : " + actualChunkPos.position);
-            //Debug.Log("Next chunk pos : " + nextChunkPos.position);
             PlayerInChunk = 2;
 
-            // Debug.Log(newPlayer.transform.position);
-            //Debug.Log(chunkList[4].transform.position.z);
 
         }
 
@@ -79,7 +75,7 @@
             GameObject chunk = Instantiate(NextChunkTriggerPrefab, chunkList[5].transform.position, Quaternion.identity);
             
             Vector3 chunkCollider = chunk.GetComponent<BoxCollider>().size;
-            chunkCollider.x = chunkPrefab.GetComponent<Renderer>().bounds.size.x*2;
+            chunkCollider.x = chunkPrefab.GetComponent<Renderer>().bounds.size.x*10;
             chunkCollider.y = 500;
             chunkCollider.z = chunkPrefab.GetComponent<Renderer>().bounds.size.z;
             chunk.transform.localScale = chunkCollider;

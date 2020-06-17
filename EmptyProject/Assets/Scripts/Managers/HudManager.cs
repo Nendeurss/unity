@@ -1,4 +1,4 @@
-﻿namespace STUDENT_NAME
+﻿namespace LIM_TRAN_HOUACINE_NGUYEN
 {
 	using System.Collections;
 	using System.Collections.Generic;
@@ -63,7 +63,7 @@
             {
                 Debug.Log(" HUD MANAGER TIMER " + timer);
                 m_TxtTimer.text = timer.ToString();
-                yield return new WaitForSeconds(1);
+                yield return new WaitForSecondsRealtime(1f);
                 timer--;
             }
             Debug.Log("fin coroutine HUD manager");

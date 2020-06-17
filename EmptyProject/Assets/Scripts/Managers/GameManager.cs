@@ -1,4 +1,4 @@
-﻿namespace STUDENT_NAME
+﻿namespace LIM_TRAN_HOUACINE_NGUYEN
 {
 	using System.Collections;
 	using UnityEngine;
@@ -7,7 +7,9 @@
 	using SDD.Events;
 	using System.Linq;
 
-	public enum GameState { gameMenu, gamePlay, gameNextLevel, gamePause, gameOver, gameVictory }
+	public enum GameState { gameMenu, gamePlay, gameNextLevel, gamePause, gameOver, gameVictory,
+        gameTimer
+    }
 
 	public class GameManager : Manager<GameManager>
 	{
@@ -93,7 +95,6 @@
             EventManager.Instance.AddListener<PlayerHasBeenHitEvent>(PlayerHasBeenHit);
 
             //Game state 
-            EventManager.Instance.AddListener<GameOverEvent>(GameOver);
             EventManager.Instance.AddListener<TimerBeforePlayEvent>(TimerBeforePlay);
 
             //MainMenuManager
@@ -115,7 +116,6 @@
             //PlayerController
             EventManager.Instance.RemoveListener<PlayerHasBeenHitEvent>(PlayerHasBeenHit);
 
-            EventManager.Instance.RemoveListener<GameOverEvent>(GameOver);
             EventManager.Instance.RemoveListener<TimerBeforePlayEvent>(TimerBeforePlay);
 
             //MainMenuManager
@@ -177,8 +177,6 @@
 
 		private void PlayButtonClicked(PlayButtonClickedEvent e)
 		{
-            //StartCoroutine(StartCountdown("Play"));
-            //EventManager.Instance.Raise(new TimerBeforePlayEvent() {});
             
             Play();
 		}
@@ -188,8 +186,7 @@
 
             
             Resume();
-            //EventManager.Instance.Raise(new TimerBeforePlayEvent() { });
-            //StartCoroutine(StartCountdown("Resume"));
+
         }
 
 		private void EscapeButtonClicked(EscapeButtonClickedEvent e)
@@ -273,17 +270,21 @@
         IEnumerator StartCountdown()
         {
             Debug.Log("debut coroutine Game manager");
-            //m_GameState = GameState.gameTimer;
+            m_GameState = GameState.gameTimer;
+            SetTimeScale(0);
             timer = timerStart;
+            
             while(timer > 0)
             {
                 Debug.Log("Game manager TIMER " + timer);
-                yield return new WaitForSeconds(1f);
+                yield return new WaitForSecondsRealtime(1f);
                 timer--;
             }
+            SetTimeScale(1);
             m_GameState = GameState.gamePlay;
             Debug.Log("Fin coroutine Game Manager");
         }
+
         #endregion
     }
 }
