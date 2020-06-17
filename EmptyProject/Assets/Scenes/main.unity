@@ -798,7 +798,7 @@ PrefabInstance:
         type: 3}
       propertyPath: chunkPrefab
       value: 
-      objectReference: {fileID: 6294984909596749546, guid: 319b0c5c7e1e542479d5c30e46aa6786,
+      objectReference: {fileID: 3567958657919519420, guid: e6f8d485e1fb58449bacfc63ca80e3dc,
         type: 3}
     - target: {fileID: 114186785974676832, guid: 68480a01e4a00ab45b3d746ae2fc86ee,
         type: 3}

@@ -5,6 +5,7 @@ using UnityEngine;
 public class RotationScript : MonoBehaviour
 {
     bool canRotate;
+    Transform rotationAxe;
     // Start is called before the first frame update
     void Start()
     {
@@ -13,6 +14,7 @@ public class RotationScript : MonoBehaviour
 
     private void Awake()
     {
+        rotationAxe = transform.GetChild(1);
         int a = this.transform.childCount;
         canRotate = true;
     }
@@ -30,7 +32,7 @@ public class RotationScript : MonoBehaviour
             //plane1.Rotate(new Vector3(0, 0, 1), 90);
             //plane2.Rotate(new Vector3(0, 0, 1), 90);
             //plane3.Rotate(new Vector3(0, 0, 1), 90);
-            this.transform.Rotate(new Vector3(0, 0, 1), 90);
+            this.transform.RotateAround(rotationAxe.position, new Vector3(0, 0, 1), 90);
             StartCoroutine(RotateCoroutine());
         }
     }

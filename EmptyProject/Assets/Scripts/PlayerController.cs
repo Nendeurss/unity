@@ -73,7 +73,7 @@ public class PlayerController : SimpleGameStateObserver, IScore
     {
         m_Rigidbody.AddForce(new Vector3(0, 10, 0), ForceMode.Impulse);
         canJump = false;
-        while(transform.position.y!=1)yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(2f);
         canJump = true;
     }
 
