@@ -1,5 +1,5 @@
 ﻿
-namespace STUDENT_NAME
+namespace LIM_TRAN_HOUACINE_NGUYEN
 {
 	using System;
 	using System.Collections;
@@ -167,7 +167,7 @@ namespace STUDENT_NAME
             while (timer > 0)
             {
                 Debug.Log(" MENU MANAGER TIMER " + timer);
-                yield return new WaitForSeconds(1f);
+                yield return new WaitForSecondsRealtime(1f); 
                 timer--;
             }
             OpenPanel(null);
